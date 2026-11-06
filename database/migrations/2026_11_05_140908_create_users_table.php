@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreign('role_id')->references('role_id')->on('roles')->onDelete('cascade')->onUpdate('cascade');
 
             $table->unsignedBigInteger('department_id')->nullable();
-            $table->foreign('department_id')->references('department_id')->on('departments')->nullOnDelete();
+            $table->foreign('department_id')->references('department_id')->on('departments')->nullOnDelete()->onUpdate('cascade');
 
             $table->string('photo', 255)->nullable();
             $table->date('birth_date')->nullable();
