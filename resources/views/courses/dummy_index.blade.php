@@ -4,9 +4,8 @@
 <div class="card shadow-sm">
     <div class="card-header bg-white py-3">
         <h5 class="mb-0 fw-bold text-secondary">
-            <i class="bi bi-card-checklist me-1"></i> Static Dummy Courses (Phase 1 Requirement)
+            <i class="bi bi-card-checklist me-1"></i> Static Dummy Courses 
         </h5>
-        <small class="text-muted">Simulated array data rendered without database queries</small>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

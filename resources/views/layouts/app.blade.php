@@ -29,7 +29,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('dummy.courses.*') ? 'active fw-bold' : '' }}" href="{{ route('dummy.courses.index') }}">
-                        <i class="bi bi-card-checklist me-1"></i> Dummy Data (Phase 1)
+                        <i class="bi bi-card-checklist me-1"></i> Dummy Data 
                     </a>
                 </li>
             </ul>

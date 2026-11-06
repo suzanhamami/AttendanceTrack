@@ -1,12 +1,16 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Department;
 use App\Models\Semester;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request;                                                             /**
+ * Project: AttendanceTrack - Module 2 (Course Management)
+ * Student Name: [Louay Arnaba Khordaji]
+ * Student ID: [202310241]
+ * Course: Web Programming 2 (WP2) - Dr. Abdo Khoury
+ */
 
 class CourseController extends Controller
 {

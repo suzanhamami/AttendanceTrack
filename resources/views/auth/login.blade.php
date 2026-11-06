@@ -14,7 +14,7 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white text-center py-3">
                     <h4 class="mb-0 fw-bold">AttendanceTrack System</h4>
-                    <small>Unified Login Portal</small>
+                    <small> Login </small>
                 </div>
                 <div class="card-body p-4">
                     @if($errors->any())

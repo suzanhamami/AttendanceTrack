@@ -3,7 +3,9 @@
 @section('content')
 <div class="card shadow-sm mb-4">
     <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-        <h5 class="mb-0 fw-bold text-primary">Courses Management (Module 2)</h5>
+        <h5 class="mb-0 fw-bold text-primary">
+            <i class="bi bi-book-half me-1"></i> Courses Management
+        </h5>
         <a href="{{ route('courses.create') }}" class="btn btn-primary btn-sm">
             <i class="bi bi-plus-lg me-1"></i> Add New Course
         </a>
@@ -49,6 +51,7 @@
                     <tr>
                         <th>Code</th>
                         <th>Course Name</th>
+                        <th>Prerequisite</th>
                         <th>Credit Hours</th>
                         <th>Department</th>
                         <th>Instructor</th>
@@ -61,6 +64,19 @@
                         <tr>
                             <td class="fw-bold">{{ $course->course_code }}</td>
                             <td>{{ $course->course_name }}</td>
+                            
+                            <!-- Prerequisite Visual Badge -->
+                            <td>
+                                @if($course->prerequisite)
+                                    <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">
+                                        <i class="bi bi-arrow-return-right me-1"></i>{{ $course->prerequisite->course_code }}
+                                    </span>
+                                    <small class="d-block text-muted">{{ $course->prerequisite->course_name }}</small>
+                                @else
+                                    <span class="text-muted small fst-italic">None</span>
+                                @endif
+                            </td>
+
                             <td>{{ $course->credit_hours }} hrs</td>
                             <td>{{ $course->department->department_name ?? 'N/A' }}</td>
                             <td>{{ $course->instructor->full_name ?? 'N/A' }}</td>
@@ -80,29 +96,28 @@
                                 </a>
 
                                 {{-- Manager exclusive actions: status toggle & delete --}}
-                                {{-- Show Toggle & Delete buttons for Manager --}}
-@if(Auth::check() && (optional(Auth::user()->role)->role_name === 'manager' || Auth::user()->role_id == 1))
-    <form action="{{ route('courses.toggle-status', $course) }}" method="POST" class="d-inline">
-        @csrf
-        @method('PATCH')
-        <button type="submit" class="btn btn-sm btn-outline-warning" title="Toggle Status">
-            <i class="bi bi-toggle2-on"></i> Toggle
-        </button>
-    </form>
+                                @if(Auth::check() && (optional(Auth::user()->role)->role_name === 'manager' || Auth::user()->role_id == 1))
+                                    <form action="{{ route('courses.toggle-status', $course->course_id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-outline-warning" title="Toggle Status">
+                                            <i class="bi bi-toggle2-on"></i> Toggle
+                                        </button>
+                                    </form>
 
-    <form action="{{ route('courses.destroy', $course) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this course?')">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-            <i class="bi bi-trash"></i> Delete
-        </button>
-    </form>
-@endif
+                                    <form action="{{ route('courses.destroy', $course->course_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this course?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">No courses registered yet.</td>
+                            <td colspan="8" class="text-center py-4 text-muted">No courses registered yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

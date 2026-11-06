@@ -26,22 +26,23 @@ class Course extends Model
     ];
 
     public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
+{
+    // foreign key on courses: 'department_id', owner key on departments: 'department_id'
+    return $this->belongsTo(Department::class, 'department_id', 'department_id');
+}
 
     public function instructor(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'instructor_id');
-    }
+{
+    return $this->belongsTo(User::class, 'instructor_id', 'user_id');
+}
 
-    public function semester(): BelongsTo
-    {
-        return $this->belongsTo(Semester::class);
-    }
+public function semester(): BelongsTo
+{
+    return $this->belongsTo(Semester::class, 'semester_id', 'semester_id');
+}
 
     public function prerequisite(): BelongsTo
     {
-        return $this->belongsTo(Course::class, 'prerequisite_id');
+        return $this->belongsTo(Course::class, 'prerequisite_id', 'course_id');
     }
 }
