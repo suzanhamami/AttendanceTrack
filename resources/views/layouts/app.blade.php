@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AttendanceTrack - Course Management</title>
+    <title>AttendanceTrack - Student & Section Management</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -12,8 +12,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
     <div class="container">
-        <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!re write the link for courses here -->
-        <a class="navbar-brand fw-bold" href="{{ route('dummy.students.index') }}">
+        <a class="navbar-brand fw-bold" href="{{ route('students.index') }}">
             <i class="bi bi-mortarboard-fill me-1"></i> AttendanceTrack
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
@@ -24,23 +23,8 @@
             @auth
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('courses.*') ? 'active fw-bold' : '' }}" href="{{ route('courses.index') }}">
-                        <i class="bi bi-database me-1"></i> Courses (DB)
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dummy.courses.*') ? 'active fw-bold' : '' }}" href="{{ route('dummy.courses.index') }}">
-                        <i class="bi bi-card-checklist me-1"></i> Dummy Data (Phase 1)
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('students.*') ? 'active fw-bold' : '' }}" href="{{ route('students.index') }}">
-                        <i class="bi bi-people-fill me-1"></i> Students (DB)
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dummy.students.*') ? 'active fw-bold' : '' }}" href="{{ route('dummy.students.index') }}">
-                        <i class="bi bi-person-lines-fill me-1"></i> Dummy Students (Phase 1)
+                        <i class="bi bi-people-fill me-1"></i> Students
                     </a>
                 </li>
             </ul>
@@ -83,4 +67,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

@@ -3,155 +3,131 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    private $mockStudents = [
-    [
-        'id' => 1,
-        'full_name' => 'Ahmad Ali',
-        'university_id' => '20260001',
-        'national_id' => '01010112345',
-        'major' => 'Informatics Engineering',
-        'year' => '2'
-    ],
-    [
-        'id' => 2,
-        'full_name' => 'Sara Omar',
-        'university_id' => '20260002',
-        'national_id' => '02020212345',
-        'major' => 'Communications Engineering',
-        'year' => '3'
-    ],
-    [
-        'id' => 3,
-        'full_name' => 'Khaled Hassan',
-        'university_id' => '20260003',
-        'national_id' => '03030312345',
-        'major' => 'Informatics Engineering',
-        'year' => '1'
-    ],
-    [
-        'id' => 4,
-        'full_name' => 'Noor Mahmoud',
-        'university_id' => '20260004',
-        'national_id' => '04040412345',
-        'major' => 'Communications Engineering',
-        'year' => '4'
-    ],
-    [
-        'id' => 5,
-        'full_name' => 'Lina Ahmad',
-        'university_id' => '20260005',
-        'national_id' => '05050512345',
-        'major' => 'Informatics Engineering',
-        'year' => '2'
-    ],
-];
-    public function index()
+      /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
     {
-        // عرض قائمة الطلاب
-        $students = $this->mockStudents;
-        return view('students.index', compact('students'));
+        $query = Student::with(['department', 'sections']);
+
+        // Filters based on project requirements (e.g., department, academic year, status)
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->department_id);
+        }
+        if ($request->filled('academic_year')) {
+            $query->where('academic_year', $request->academic_year);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('university_id', 'like', "%{$search}%")
+                  ->orWhere('national_id', 'like', "%{$search}%");
+            });
+        }
+
+        $students = $query->paginate(10);
+        $departments = Department::all();
+
+        return view('students.index', compact('students', 'departments'));
     }
 
     public function create()
     {
-        // عرض واجهة إضافة طالب جديد
-        return view('students.create');
+        $departments = Department::all();
+        return view('students.create', compact('departments'));
     }
 
     public function store(Request $request)
     {
-        // تخزين البيانات (محاكاة فقط)
-        return redirect()->route('students.index')->with('success', 'تم إضافة الطالب بنجاح');
+        $validated = $request->validate([
+            'full_name'     => 'required|string|min:3|max:100',
+            'university_id' => 'required|string|unique:students,university_id',
+            'national_id'   => 'required|string|digits:11|unique:students,national_id',
+            'birth_date'    => 'required|date|before_or_equal:' . now()->subYears(17)->format('Y-m-d'),
+            'phone'         => 'required|string|max:15',
+            'email'         => 'nullable|email|max:100|unique:students,email',
+            'department_id' => 'required|exists:departments,department_id',
+            'academic_year' => 'required|in:1,2,3,4',
+            'photo'         => 'nullable|image|mimes:jpeg,png|max:2048', 
+            'status'        => 'required|in:active,suspended,graduated',
+        ]);
+
+        // Default status to active if not provided
+        $validated['status'] = $validated['status'] ?? 'active';
+
+        Student::create($validated);
+
+        return redirect()->route('students.index')->with('success', 'Student added successfully.');
     }
-  
-    public function show($id)
+
+    public function show(Student $student)
     {
-        $student = collect($this->mockStudents)->firstWhere('id', $id);
+        // Load department and enrolled sections/grades
+        $student->load(['department', 'sections']);
         return view('students.show', compact('student'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function edit(Student $student)
     {
-        $student = collect($this->mockStudents)->firstWhere('id', $id);
-        return view('students.edit', compact('student'));
+        $departments = Department::all();
+        return view('students.edit', compact('student', 'departments'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Student $student)
     {
-        return redirect()->route('students.index')->with('success', 'Student data updated successfully');
+        $validated = $request->validate([
+            'full_name'     => 'required|string|min:3|max:100',
+            'university_id' => 'required|string|unique:students,university_id,' . $student->student_id . ',student_id',
+            'national_id'   => 'required|string|digits:11|unique:students,national_id,' . $student->student_id . ',student_id',
+            'birth_date'    => 'required|date|before_or_equal:' . now()->subYears(17)->format('Y-m-d'),
+            'phone'         => 'required|string|max:15',
+            'email'         => 'nullable|email|max:100|unique:students,email,' . $student->student_id . ',student_id',
+            'department_id' => 'required|exists:departments,department_id',
+            'academic_year' => 'required|in:1,2,3,4',
+            'photo'         => 'nullable|image|mimes:jpeg,png|max:2048', 
+            'status'        => 'required|in:active,suspended,graduated',
+        ]);
+
+        $student->update($validated);
+
+        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function toggleStatus(Student $student)
     {
-        return redirect()->route('students.index')->with('success', 'Student deleted successfully');
+        $student->status = ($student->status === 'active') ? 'inactive' : 'active';
+        $student->save();
+
+        return redirect()->route('students.index')->with('success', 'Student status updated successfully.');
     }
 
-      /**
-     * Display a listing of the resource.
-     */
-//     public function index()
-//     {
-//         //
-//     }
+    public function destroy(Student $student)
+    {
+        // Business Rule: Check that a student cannot be deleted if registered in sections or has grades
+        if ($student->sections()->exists() || method_exists($student, 'grades') && $student->grades()->exists()) {
+            return back()->with('error', 'Cannot delete student: the student is registered in sections or has recorded grades.');
+        }
 
-//     /**
-//      * Show the form for creating a new resource.
-//      */
-//     public function create()
-//     {
-//         //
-//     }
-
-//     /**
-//      * Store a newly created resource in storage.
-//      */
-//     public function store(Request $request)
-//     {
-//         //
-//     }
-
-//     /**
-//      * Display the specified resource.
-//      */
-//     public function show(Student $student)
-//     {
-//         //
-//     }
-
-//     /**
-//      * Show the form for editing the specified resource.
-//      */
-//     public function edit(Student $student)
-//     {
-//         //
-//     }
-
-//     /**
-//      * Update the specified resource in storage.
-//      */
-//     public function update(Request $request, Student $student)
-//     {
-//         //
-//     }
-
-//     /**
-//      * Remove the specified resource from storage.
-//      */
-//     public function destroy(Student $student)
-//     {
-//         //
-//     }
+        $student->delete();
+        return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
+    }
 }
+
+// 'section_id' => [
+//         'required',
+//         'exists:sections,id',
+//         // التحقق من عدم تكرار تسجيل الطالب في نفس الشعبة (منع التسجيل المكرر)[cite: 1]
+//         Rule::unique('student_section')->where(function ($query) use ($request) {
+//             return $query->where('student_id', $request->student_id)
+//                          ->where('section_id', $request->section_id);
+//         }),
+//     ],

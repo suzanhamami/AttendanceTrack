@@ -29,7 +29,7 @@ return new class extends Migration
             $table->enum('status', ['active', 'suspended', 'graduated'])->default('active');
             $table->timestamps();
         });
-        DB::statement('ALTER TABLE students ADD CONSTRAINT check_student_age CHECK (DATEDIFF(CURRENT_DATE, birth_date) >= (17 * 365.25))');
+        // DB::statement('ALTER TABLE students ADD CONSTRAINT check_student_age CHECK (DATEDIFF(CURRENT_DATE, birth_date) >= (17 * 365.25))');
     }
 
     /**

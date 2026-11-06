@@ -1,37 +1,86 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <h2>Add New Student</h2>
-    
-    <div class="card shadow-sm mt-3">
-        <div class="card-body">
-            <form action="{{ route('dummy.students.store') }}" method="POST">
-                @csrf
-                <div class="mb-3">
+<div class="card shadow-sm col-md-8 mx-auto">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold">Register New Student</h5>
+    </div>
+    <div class="card-body p-4">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('students.store') }}" method="POST">
+            @csrf
+            <div class="row g-3">
+                <div class="col-md-8">
                     <label class="form-label">Full Name</label>
-                    <input type="text" name="full_name" class="form-control" required>
+                    <input type="text" name="full_name" class="form-control" value="{{ old('full_name') }}" required>
                 </div>
-                <div class="mb-3">
+                <div class="col-md-4">
                     <label class="form-label">University ID</label>
-                    <input type="text" name="university_id" class="form-control" required>
+                    <input type="text" name="university_id" class="form-control" placeholder="e.g. 20260001" value="{{ old('university_id') }}" required>
                 </div>
-                <div class="mb-3">
+
+                <div class="col-md-6">
                     <label class="form-label">National ID</label>
-                    <input type="text" name="national_id" class="form-control" required>
+                    <input type="text" name="national_id" class="form-control" value="{{ old('national_id') }}" required>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Major</label>
-                    <input type="text" name="major" class="form-control" required>
+                <div class="col-md-6">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control" placeholder="student@attendance.edu" value="{{ old('email') }}" required>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Year</label>
-                    <input type="text" name="year" class="form-control" required>
+
+                <div class="col-md-6">
+                    <label class="form-label">Birth Date (Must be at least 17 years old)</label>
+                    <input type="date" name="birth_date" class="form-control" value="{{ old('birth_date') }}" required>
                 </div>
-                <button type="submit" class="btn btn-success">Save Student</button>
-                <a href="{{ route('dummy.students.index') }}" class="btn btn-secondary">Cancel</a>
-            </form>
-        </div>
+                <div class="col-md-6">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="phone" class="form-control" placeholder="+9639xxxxxxxx" value="{{ old('phone') }}" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Department</label>
+                    <select name="department_id" class="form-select" required>
+                        <option value="">-- Select Department --</option>
+                        @foreach($departments as $dept)
+                            <option value="{{ $dept->department_id }}" {{ old('department_id') == $dept->department_id ? 'selected' : '' }}>
+                                {{ $dept->department_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Academic Year</label>
+                    <select name="academic_year" class="form-select" required>
+                        <option value="1" {{ old('academic_year') == '1' ? 'selected' : '' }}>Year 1</option>
+                        <option value="2" {{ old('academic_year') == '2' ? 'selected' : '' }}>Year 2</option>
+                        <option value="3" {{ old('academic_year') == '3' ? 'selected' : '' }}>Year 3</option>
+                        <option value="4" {{ old('academic_year') == '4' ? 'selected' : '' }}>Year 4</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select" required>
+                        <option value="active" {{ old('status', 'active') == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="suspended" {{ old('status') == 'suspended' ? 'selected' : '' }}>Suspended</option>
+                        <option value="graduated" {{ old('status') == 'graduated' ? 'selected' : '' }}>Graduated</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-4 text-end">
+                <a href="{{ route('students.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Student</button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

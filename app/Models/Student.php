@@ -42,7 +42,6 @@ class Student extends Model
             'section_id'       // Foreign key for Section in pivot
         )
         ->using(StudentSection::class) // Links it to your custom pivot model if needed
-        ->withPivot('registration_date', 'student_section_id')
-        ->withTimestamps();
+        ->withPivot('registration_date', 'student_section_id');
     }
 }

@@ -10,7 +10,8 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect()->route('courses.index');
+            // return redirect()->route('courses.index');
+            return redirect()->route('students.index');
         }
         return view('auth.login');
     }
@@ -31,7 +32,8 @@ class AuthController extends Controller
             'status' => 'active'
         ])) {
             $request->session()->regenerate();
-            return redirect()->intended(route('courses.index'));
+            // return redirect()->intended(route('courses.index'));
+            return redirect()->intended(route('students.index'));
         }
 
         return back()->withErrors([
