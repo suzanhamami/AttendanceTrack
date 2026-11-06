@@ -17,15 +17,15 @@ return new class extends Migration
 
             // Foreign Key 1: department_id -> references departments(department_id)
             $table->unsignedBigInteger('department_id');
-            $table->foreign('department_id')->references('department_id')->on('departments')->onDelete('cascade');
+            $table->foreign('department_id')->references('department_id')->on('departments')->onDelete('cascade')->onUpdate('cascade');
 
             // Foreign Key 2: instructor_id -> references users(user_id)
             $table->unsignedBigInteger('instructor_id');
-            $table->foreign('instructor_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->foreign('instructor_id')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
 
             // Foreign Key 3: semester_id -> references semesters(semester_id)
             $table->unsignedBigInteger('semester_id');
-            $table->foreign('semester_id')->references('semester_id')->on('semesters')->onDelete('cascade');
+            $table->foreign('semester_id')->references('semester_id')->on('semesters')->onDelete('cascade')->onUpdate('cascade');
 
             // Foreign Key 4: prerequisite_id -> references courses(course_id)
             $table->unsignedBigInteger('prerequisite_id')->nullable();
