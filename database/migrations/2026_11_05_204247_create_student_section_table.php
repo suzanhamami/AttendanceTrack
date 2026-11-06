@@ -12,21 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('student_section', function (Blueprint $table) {
-            $table->id();
+            $table->id('student_section_id');
             $table->foreignId('student_id')
-                  ->constrained('students')
+                  ->constrained('students', 'student_id')
                   ->onDelete('cascade')
                   ->onUpdate('cascade'); 
             $table->foreignId('section_id')
-                  ->constrained('sections')
+                  ->constrained('sections', 'section_id')
                   ->onDelete('cascade')
                   ->onUpdate('cascade'); 
             
             $table->date('registration_date'); 
             
             // Unique constraint to prevent duplicate section registration for the same student
-            $table->unique(['student_id', 'section_id']);
-            $table->timestamps();
+            $table->unique(['student_id', 'section_id'], 'unique_student_section');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

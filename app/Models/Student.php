@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     //
+    protected $primaryKey = 'student_id';
+    
     protected $fillable = [
         'full_name', 
         'university_id', 
@@ -25,10 +27,22 @@ class Student extends Model
     ];
 
     public function department(){
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
+    // public function sections() {
+    //     return $this->belongsToMany(Section::class, 'student_section');
+    // }
+
     public function sections() {
-        return $this->belongsToMany(Section::class, 'student_section');
+        return $this->belongsToMany(
+            Section::class, 
+            'student_section', // Pivot table name
+            'student_id',      // Foreign key for Student in pivot
+            'section_id'       // Foreign key for Section in pivot
+        )
+        ->using(StudentSection::class) // Links it to your custom pivot model if needed
+        ->withPivot('registration_date', 'student_section_id')
+        ->withTimestamps();
     }
 }
