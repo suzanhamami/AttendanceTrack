@@ -48,8 +48,8 @@ class CourseSeeder extends Seeder
                 'full_name' => 'Dr. Department Manager',
                 'email' => 'manager@attendance.edu',
                 'password' => Hash::make('12345678'),
-                'role_id' => $managerRole->getKey(),             // Safely fetches role_id
-                'department_id' => $depSE->getKey(),            // Safely fetches department_id
+                'role_id' => $managerRole->getKey(),             
+                'department_id' => $depSE->getKey(),            
                 'status' => 'active'
             ]
         );
@@ -78,7 +78,7 @@ class CourseSeeder extends Seeder
             ]
         );
 
-        // 5. Courses (5 Records for Module 2)
+        // 5. Courses 
         $courseWeb1 = Course::firstOrCreate(
             ['course_code' => 'CS100'],
             [

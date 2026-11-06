@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 /**
- * Module 2: Course & Syllabus Management (Phase 1: In-Memory Mock Data)
- * Student: [Student Name] - [University ID]
+ * Student: Louay Arnaba Khordaji - 202310241
  */
 class DummyCourseController extends Controller
 {
@@ -116,6 +115,12 @@ class DummyCourseController extends Controller
 
     public function update(Request $request, int $id)
     {
+        $request->validate([
+            'course_name' => 'required|string|min:3|max:100',
+            'course_code' => 'required|string',
+            'credit_hours' => 'required|integer|between:1,6',
+        ]);
+
         return redirect()->route('dummy.courses.index')->with('success', 'Course simulated and updated successfully.');
     }
 

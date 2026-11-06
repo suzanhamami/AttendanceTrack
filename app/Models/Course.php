@@ -27,7 +27,6 @@ class Course extends Model
 
     public function department(): BelongsTo
 {
-    // foreign key on courses: 'department_id', owner key on departments: 'department_id'
     return $this->belongsTo(Department::class, 'department_id', 'department_id');
 }
 
