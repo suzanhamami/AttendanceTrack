@@ -11,11 +11,24 @@ class Student extends Model
         'full_name', 
         'university_id', 
         'national_id', 
-        'major', 
-        'year'
+        'birth_date', 
+        'phone', 
+        'email', 
+        'department_id', 
+        'academic_year', 
+        'photo', 
+        'status'
     ];
 
     protected $casts = [
         'year' => 'string'
     ];
+
+    public function department(){
+        return $this->belongsTo(Department::class);
+    }
+
+    public function sections() {
+        return $this->belongsToMany(Section::class, 'student_section');
+    }
 }
